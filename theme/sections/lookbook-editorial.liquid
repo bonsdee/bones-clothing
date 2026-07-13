@@ -1,0 +1,83 @@
+{{ 'lookbook-editorial.css' | asset_url | stylesheet_tag }}
+
+<section class="lookbook-editorial">
+  <div class="container">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="lookbook-editorial__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="lookbook-editorial__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'story' -%}
+          <article class="lookbook-editorial__story" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="lookbook-editorial__image">
+                <img
+                  src="{{ block.settings.image | image_url: width: 900 }}"
+                  loading="lazy"
+                  alt="{{ block.settings.heading | escape }}"
+                  width="900"
+                  height="{{ 900 | divided_by: block.settings.image.aspect_ratio }}"
+                >
+              </div>
+            {%- elsif forloop.first -%}
+              {%- comment -%}
+                First story falls back to a bundled theme asset so the section
+                ships with real editorial imagery even before a merchant picks
+                one in the theme editor. Any later imageless block gets the
+                branded placeholder panel instead.
+              {%- endcomment -%}
+              <div class="lookbook-editorial__image">
+                <img
+                  src="{{ 'the-neighborhood.jpg' | asset_url }}"
+                  loading="lazy"
+                  alt="{{ block.settings.heading | escape }}"
+                  width="1200"
+                  height="655"
+                >
+              </div>
+            {%- else -%}
+              <div class="lookbook-editorial__image lookbook-editorial__image--placeholder" aria-hidden="true"></div>
+            {%- endif -%}
+            <div class="lookbook-editorial__text">
+              {%- if block.settings.eyebrow != blank -%}
+                <p class="lookbook-editorial__eyebrow">{{ block.settings.eyebrow }}</p>
+              {%- endif -%}
+              <h3>{{ block.settings.heading }}</h3>
+              <p>{{ block.settings.body }}</p>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook Editorial",
+  "tag": "section",
+  "class": "shopify-section--lookbook",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Section heading", "default": "The Neighborhood Issue" }
+  ],
+  "blocks": [
+    {
+      "type": "story",
+      "name": "Story block",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "FROM THE BLOCK" },
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "textarea", "id": "body", "label": "Body copy" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Editorial",
+      "blocks": [{ "type": "story" }]
+    }
+  ]
+}
+{% endschema %}

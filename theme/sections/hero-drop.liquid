@@ -1,0 +1,43 @@
+{{ 'hero-drop.css' | asset_url | stylesheet_tag }}
+
+<section class="hero-drop" style="background-image: url({% if section.settings.background_image != blank %}{{ section.settings.background_image | image_url: width: 1800 }}{% else %}{{ 'bg.jpg' | asset_url }}{% endif %});">
+  <div class="hero-drop__scrim"></div>
+  <div class="container hero-drop__content">
+    <p class="hero-drop__eyebrow">Local Streetwear &middot; Limited Runs</p>
+    <h1 class="hero-drop__heading">{{ section.settings.heading }}</h1>
+    {%- if section.settings.subheading != blank -%}
+      <p class="hero-drop__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    {%- if settings.enable_drop_countdown and settings.next_drop_iso != blank -%}
+      <div class="hero-drop__countdown" data-countdown data-target="{{ settings.next_drop_iso }}">
+        <div class="hero-drop__countdown-unit"><span data-countdown-days>00</span><small>Days</small></div>
+        <div class="hero-drop__countdown-unit"><span data-countdown-hours>00</span><small>Hrs</small></div>
+        <div class="hero-drop__countdown-unit"><span data-countdown-minutes>00</span><small>Min</small></div>
+        <div class="hero-drop__countdown-unit"><span data-countdown-seconds>00</span><small>Sec</small></div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_url != blank -%}
+      <a href="{{ section.settings.cta_url }}" class="btn btn--accent hero-drop__cta">{{ section.settings.cta_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Drop",
+  "tag": "section",
+  "class": "shopify-section--hero-drop",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "DROP 004 — GRAYSCALE" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Twelve pieces. One block. Gone when they're gone." },
+    { "type": "image_picker", "id": "background_image", "label": "Background image" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop the Drop" },
+    { "type": "url", "id": "cta_url", "label": "Button link" }
+  ],
+  "presets": [
+    { "name": "Hero Drop" }
+  ]
+}
+{% endschema %}

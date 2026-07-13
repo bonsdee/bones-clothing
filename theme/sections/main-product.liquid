@@ -1,0 +1,116 @@
+{{ 'product.css' | asset_url | stylesheet_tag }}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<section class="product" data-section-id="{{ section.id }}" data-product-id="{{ product.id }}">
+  <div class="container product__layout">
+    <div class="product__gallery" data-product-gallery>
+      {%- for image in product.images -%}
+        <button type="button" class="product__gallery-thumb" data-gallery-thumb data-full="{{ image | image_url: width: 1200 }}" aria-label="View image {{ forloop.index }}">
+          <img src="{{ image | image_url: width: 200 }}" alt="{{ image.alt | escape }}" loading="lazy" width="200" height="250">
+        </button>
+      {%- endfor -%}
+      <div class="product__gallery-main">
+        <img
+          data-gallery-main
+          src="{{ product.featured_image | image_url: width: 1200 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          width="1200"
+          height="1500"
+        >
+      </div>
+    </div>
+
+    <div class="product__info">
+      {%- if section.settings.show_vendor and product.vendor != blank -%}
+        <p class="product__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+      <h1 class="product__title">{{ product.title }}</h1>
+
+      <div class="product__price" data-product-price>
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="product__price-compare">{{ current_variant.compare_at_price | money }}</span>
+        {%- endif -%}
+        <span class="product__price-current">{{ current_variant.price | money }}</span>
+      </div>
+
+      {%- if current_variant.available and current_variant.inventory_management != blank and current_variant.inventory_quantity <= 5 and current_variant.inventory_quantity > 0 -%}
+        <p class="product__low-stock">{{ 'products.product.low_stock' | t: count: current_variant.inventory_quantity }}</p>
+      {%- endif -%}
+
+      {{ form | default: '' }}
+      {% form 'product', product, data-product-form: '' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-product-form-variant-id>
+
+        {%- comment -%}
+          Shopify auto-generates a single "Default Title" variant under an
+          option named "Title" for products with no real variants. Rendering
+          that as a selector just shows meaningless "Title / Default Title"
+          UI, so skip the whole picker unless the product has real options.
+        {%- endcomment -%}
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <fieldset class="product__option">
+              <legend>{{ option.name }}</legend>
+              <div class="product__option-values">
+                {%- for value in option.values -%}
+                  <label class="product__option-value">
+                    <input
+                      type="radio"
+                      name="option-{{ option.position }}"
+                      value="{{ value | escape }}"
+                      data-option-position="{{ option.position }}"
+                      {% if option.selected_value == value %}checked{% endif %}
+                    >
+                    <span>{{ value }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <script type="application/json" data-product-json>
+          {{ product.variants | json }}
+        </script>
+
+        <div class="product__cta">
+          <button
+            type="submit"
+            class="btn btn--accent product__add-to-cart"
+            data-add-to-cart
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-label>
+              {%- if current_variant.available -%}
+                {{ 'products.product.add_to_bag' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+        </div>
+      {% endform %}
+
+      {%- if section.settings.enable_zoom -%}
+        <p class="product__zoom-hint">Tap thumbnails to preview. Click main image to zoom.</p>
+      {%- endif -%}
+
+      <div class="product__description rte">
+        {{ product.description }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product information",
+  "settings": [
+    { "type": "checkbox", "id": "enable_zoom", "label": "Enable image zoom hint", "default": true },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false }
+  ]
+}
+{% endschema %}

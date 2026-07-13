@@ -1,0 +1,32 @@
+{
+  "general": {
+    "search": { "placeholder": "Search the block", "submit": "Search" },
+    "cart": {
+      "title": "Your Bag",
+      "empty": "Your bag is empty. Time to fix that.",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "view_cart": "View bag",
+      "remove": "Remove",
+      "quantity": "Qty"
+    }
+  },
+  "products": {
+    "product": {
+      "sold_out": "Sold Out",
+      "add_to_bag": "Add to Bag",
+      "notify_me": "Notify Me When Restocked",
+      "notify_success": "You're on the list. We'll email you the second it's back.",
+      "notify_error": "Something went wrong. Try again in a bit.",
+      "select_size": "Select a size",
+      "low_stock": "Only {{ count }} left"
+    }
+  },
+  "fit_builder": {
+    "heading": "Build Your Fit",
+    "subheading": "Pick one from each category. Unlock a bundle price automatically.",
+    "add_bundle": "Add Fit to Bag",
+    "savings": "You save {{ amount }}",
+    "select_prompt": "Choose an item"
+  }
+}

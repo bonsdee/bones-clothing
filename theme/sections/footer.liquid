@@ -1,0 +1,65 @@
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__block">
+      <img
+        class="site-footer__logo-img"
+        src="{{ 'logo.png' | asset_url }}"
+        alt="{{ shop.name | default: 'Bones Clothing' }}"
+        width="677"
+        height="369"
+        loading="lazy"
+      >
+      <p class="site-footer__tagline">{{ section.settings.tagline }}</p>
+      <div class="site-footer__social">
+        {%- if settings.social_instagram_link != blank -%}
+          <a href="{{ settings.social_instagram_link }}" aria-label="Instagram">IG</a>
+        {%- endif -%}
+        {%- if settings.social_tiktok_link != blank -%}
+          <a href="{{ settings.social_tiktok_link }}" aria-label="TikTok">TT</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="site-footer__block">
+      <h3>{{ section.settings.link_heading_1 }}</h3>
+      <ul>
+        {%- for link in section.settings.footer_menu.links -%}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="site-footer__block site-footer__signup">
+      <h3>{{ section.settings.signup_heading }}</h3>
+      <p>{{ section.settings.signup_subtext }}</p>
+      {% form 'customer' %}
+        {{ form.errors | default: '' }}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="footer-signup__row">
+          <input type="email" name="contact[email]" placeholder="you@email.com" required aria-label="Email address">
+          <button type="submit">Join</button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p class="footer-signup__success">You're in. Watch your inbox for drop alerts.</p>
+        {%- endif -%}
+      {% endform %}
+    </div>
+  </div>
+
+  <div class="site-footer__bottom container">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Built local. Worn everywhere.</p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Independent streetwear, cut and screened three blocks from here." },
+    { "type": "text", "id": "link_heading_1", "label": "Link column heading", "default": "Shop" },
+    { "type": "link_list", "id": "footer_menu", "label": "Footer menu", "default": "footer" },
+    { "type": "text", "id": "signup_heading", "label": "Signup heading", "default": "Get Drop Alerts" },
+    { "type": "text", "id": "signup_subtext", "label": "Signup subtext", "default": "First access. No spam. Unsubscribe whenever." }
+  ]
+}
+{% endschema %}

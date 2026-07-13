@@ -1,0 +1,50 @@
+{{ 'product-grid.css' | asset_url | stylesheet_tag }}
+{{ 'search.css' | asset_url | stylesheet_tag }}
+
+<section class="search-page">
+  <div class="container">
+    <h1 class="search-page__title">Search</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <input
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="Search for drops, tees, hoodies…"
+        aria-label="Search"
+        autocomplete="off"
+      >
+      <input type="hidden" name="type" value="product">
+      <button type="submit">Search</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <p class="search-page__count">
+          {{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;
+        </p>
+        <div class="product-grid">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item %}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p class="search-page__empty">
+          No matches for &ldquo;{{ search.terms | escape }}&rdquo;. Try another word, or
+          <a href="{{ routes.all_products_collection_url }}">browse everything</a>.
+        </p>
+      {%- endif -%}
+    {%- else -%}
+      <p class="search-page__hint">Looking for something specific? Search the whole catalog above.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,107 @@
+{{ 'product-grid.css' | asset_url | stylesheet_tag }}
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+
+<section class="collection-grid-section">
+  <div class="container collection-grid-layout">
+    {%- if section.settings.enable_filtering -%}
+      <aside class="collection-filters">
+        <h2>Filter</h2>
+        {%- for filter in collection.filters -%}
+          <div class="collection-filters__group">
+            <h3>{{ filter.label }}</h3>
+            <ul>
+              {%- for value in filter.values -%}
+                <li>
+                  <label>
+                    <input
+                      type="checkbox"
+                      data-filter-input
+                      {% if value.active %}checked{% endif %}
+                      onclick="window.location.href='{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}'"
+                    >
+                    {{ value.label }} ({{ value.count }})
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endfor -%}
+      </aside>
+    {%- endif -%}
+
+    <div class="collection-grid-main">
+      <div class="collection-grid-toolbar">
+        <p class="collection-grid-count">{{ collection.products_count }} items</p>
+        {%- if section.settings.enable_sorting -%}
+          <form class="collection-sort">
+            <label for="SortBy" class="visually-hidden">Sort by</label>
+            <select id="SortBy" name="sort_by" onchange="window.location.href = updateQueryParam(window.location.href, 'sort_by', this.value)">
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+          </form>
+        {%- endif -%}
+      </div>
+
+      <div class="product-grid product-grid--{{ section.settings.columns_desktop }}-col">
+        {%- paginate collection.products by section.settings.products_per_page -%}
+          {%- for product in collection.products -%}
+            {% render 'product-card', product: product %}
+          {%- else -%}
+            <p class="collection-grid-empty">No products found. Try clearing your filters.</p>
+          {%- endfor -%}
+        {%- endpaginate -%}
+      </div>
+
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="Pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}">&larr; Prev</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}">{{ part.title }}</a>
+              {%- else -%}
+                <span class="pagination__current">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}">Next &rarr;</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  function updateQueryParam(url, key, value) {
+    var u = new URL(url);
+    u.searchParams.set(key, value);
+    return u.toString();
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Collection product grid",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 4, "max": 48, "step": 4, "default": 16 },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable filtering", "default": true },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Enable sorting", "default": true }
+  ]
+}
+{% endschema %}

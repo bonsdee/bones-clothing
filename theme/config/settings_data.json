@@ -1,0 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "color_background": "#0d0d0d",
+    "color_text": "#f5f3ee",
+    "color_accent": "#f4d21c",
+    "color_muted": "#1a1a1a",
+    "color_border": "#333333",
+    "heading_font_stack": "'Helvetica Neue', Arial, sans-serif",
+    "enable_drop_countdown": true,
+    "next_drop_iso": "2026-08-01T18:00:00-07:00",
+    "social_instagram_link": "https://instagram.com/bonesclothing",
+    "social_tiktok_link": "https://tiktok.com/@bonesclothing"
+  },
+  "presets": {
+    "Bones Clothing Default": {
+      "color_background": "#0d0d0d",
+      "color_text": "#f5f3ee",
+      "color_accent": "#f4d21c",
+      "color_muted": "#1a1a1a",
+      "color_border": "#333333"
+    }
+  }
+}

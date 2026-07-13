@@ -1,0 +1,87 @@
+.lookbook-editorial { padding: 72px 0; }
+
+.lookbook-editorial__heading {
+  font-size: clamp(26px, 4vw, 40px);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.lookbook-editorial__grid {
+  display: grid;
+  gap: 32px;
+}
+
+.lookbook-editorial__story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.lookbook-editorial__story:nth-child(even) .lookbook-editorial__image { order: 2; }
+
+.lookbook-editorial__image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--color-muted);
+}
+
+/* Branded fallback panel shown when a story block has no image assigned —
+   diagonal charcoal weave with a faint gold wordmark so the slot reads as an
+   intentional editorial graphic rather than an empty box. */
+.lookbook-editorial__image--placeholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: repeating-linear-gradient(
+    45deg,
+    #141414,
+    #141414 16px,
+    #191919 16px,
+    #191919 32px
+  );
+}
+
+.lookbook-editorial__image--placeholder::after {
+  content: "BONES";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(30px, 5vw, 56px);
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  text-transform: uppercase;
+  color: rgba(244, 210, 28, 0.16);
+}
+
+.lookbook-editorial__eyebrow {
+  color: var(--color-accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.lookbook-editorial__text h3 {
+  font-size: 26px;
+  margin-bottom: 14px;
+}
+
+.lookbook-editorial__text p {
+  color: #b9b6ad;
+  font-size: 15px;
+  max-width: 46ch;
+}
+
+@media (max-width: 760px) {
+  .lookbook-editorial__story { grid-template-columns: 1fr; }
+  .lookbook-editorial__story:nth-child(even) .lookbook-editorial__image { order: 0; }
+}

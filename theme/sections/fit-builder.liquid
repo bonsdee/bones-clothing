@@ -1,0 +1,129 @@
+{{ 'fit-builder.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'fit-builder.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  STANDOUT FEATURE: Fit Builder
+  Lets a shopper pick one product from each configured "slot" (tee, hoodie,
+  bottoms, accessory...) and see a live running total with an automatic
+  bundle discount once every slot is filled. Adding the fit adds each chosen
+  variant to the cart in one request, then applies the matching bundle
+  discount code (created by the merchant in Shopify Discounts, named to match
+  `discount_code_prefix` + slot count, e.g. FITBUNDLE4) via Shopify's native
+  /discount/:code redirect endpoint. No app/back end required for the theme
+  half of this feature to work.
+{%- endcomment -%}
+
+<section class="fit-builder" data-fit-builder data-discount-percent="{{ section.settings.discount_percent }}" data-discount-prefix="{{ section.settings.discount_code_prefix }}">
+  <div class="container">
+    <div class="fit-builder__header">
+      <h2>
+        {%- if section.settings.heading != blank -%}
+          {{ section.settings.heading }}
+        {%- else -%}
+          {{ 'fit_builder.heading' | t }}
+        {%- endif -%}
+      </h2>
+      <p>
+        {%- if section.settings.subheading != blank -%}
+          {{ section.settings.subheading }}
+        {%- else -%}
+          {{ 'fit_builder.subheading' | t }}
+        {%- endif -%}
+      </p>
+    </div>
+
+    <div class="fit-builder__slots">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slot' -%}
+          {%- assign slot_collection = collections[block.settings.collection] -%}
+          <div class="fit-builder__slot" data-fit-slot data-slot-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+            <h3 class="fit-builder__slot-label">{{ forloop.index }}. {{ block.settings.label }}</h3>
+            <div class="fit-builder__slot-options">
+              {%- if slot_collection != blank -%}
+                {%- for product in slot_collection.products limit: 8 -%}
+                  {%- assign variant = product.selected_or_first_available_variant -%}
+                  <button
+                    type="button"
+                    class="fit-builder__option"
+                    data-fit-option
+                    data-variant-id="{{ variant.id }}"
+                    data-product-title="{{ product.title | escape }}"
+                    data-price="{{ variant.price }}"
+                    data-available="{{ variant.available }}"
+                    aria-pressed="false"
+                  >
+                    <span class="fit-builder__option-image">
+                      {%- if product.featured_image -%}
+                        <img src="{{ product.featured_image | image_url: width: 200 }}" loading="lazy" alt="{{ product.title | escape }}" width="200" height="{{ 200 | divided_by: product.featured_image.aspect_ratio }}">
+                      {%- endif -%}
+                    </span>
+                    <span class="fit-builder__option-title">{{ product.title }}</span>
+                    <span class="fit-builder__option-price">{{ variant.price | money }}</span>
+                  </button>
+                {%- else -%}
+                  <p class="fit-builder__empty">{{ 'fit_builder.select_prompt' | t }} — add products to the "{{ block.settings.label }}" collection.</p>
+                {%- endfor -%}
+              {%- else -%}
+                <p class="fit-builder__empty">No collection configured for this slot yet.</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="fit-builder__summary" data-fit-summary>
+      <div class="fit-builder__summary-line">
+        <span>Subtotal</span>
+        <span data-fit-subtotal>{{ 0 | money }}</span>
+      </div>
+      <div class="fit-builder__summary-line fit-builder__summary-line--savings" data-fit-savings-row hidden>
+        <span>Bundle savings ({{ section.settings.discount_percent }}%)</span>
+        <span data-fit-savings>{{ 0 | money }}</span>
+      </div>
+      <div class="fit-builder__summary-line fit-builder__summary-line--total">
+        <span>Total</span>
+        <span data-fit-total>{{ 0 | money }}</span>
+      </div>
+      <button type="button" class="btn btn--accent fit-builder__add" data-fit-add disabled>
+        {{ 'fit_builder.add_bundle' | t }}
+      </button>
+      <p class="fit-builder__hint" data-fit-hint>Pick one item from every rack to unlock your bundle price.</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fit Builder",
+  "tag": "section",
+  "class": "shopify-section--fit-builder",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build Your Fit" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Grab one piece from each rack. The bundle price unlocks automatically." },
+    { "type": "range", "id": "discount_percent", "label": "Bundle discount %", "min": 0, "max": 40, "step": 5, "default": 15 },
+    { "type": "text", "id": "discount_code_prefix", "label": "Discount code prefix", "info": "Create a Shopify discount code matching PREFIX + number of slots, e.g. FITBUNDLE4, for a 4-slot builder.", "default": "FITBUNDLE" }
+  ],
+  "blocks": [
+    {
+      "type": "slot",
+      "name": "Slot",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Slot label", "default": "Category" },
+        { "type": "collection", "id": "collection", "label": "Collection to pull options from" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fit Builder",
+      "blocks": [
+        { "type": "slot", "settings": { "label": "Tee" } },
+        { "type": "slot", "settings": { "label": "Hoodie / Jacket" } },
+        { "type": "slot", "settings": { "label": "Bottoms" } },
+        { "type": "slot", "settings": { "label": "Accessory" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

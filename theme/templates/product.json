@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_zoom": true,
+        "show_vendor": false
+      }
+    },
+    "restock_notify": {
+      "type": "restock-notify",
+      "settings": {
+        "heading": "Missed Your Size?",
+        "subtext": "Drop your email and we'll ping you the second this restocks. No spam, just heat."
+      }
+    },
+    "related": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "You Might Also Like",
+        "collection": "",
+        "products_to_show": 4,
+        "columns_desktop": "4"
+      }
+    }
+  },
+  "order": ["main", "restock_notify", "related"]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "drop-restock-manager-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Embedded Shopify Admin app backend for the Drop & Restock Manager.",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node src/db/migrate.js",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^11.6.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.45.2",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

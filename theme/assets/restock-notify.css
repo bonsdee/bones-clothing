@@ -1,0 +1,30 @@
+.restock-notify {
+  padding: 48px 0;
+  background: var(--color-muted);
+  border-top: 1px solid var(--color-border);
+}
+
+.restock-notify__inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.restock-notify__text h2 { font-size: 22px; text-transform: uppercase; margin-bottom: 8px; }
+.restock-notify__text p { color: #b9b6ad; font-size: 14px; margin-bottom: 20px; }
+
+.restock-notify__form { display: flex; gap: 8px; }
+.restock-notify__form input[type='email'] {
+  flex: 1;
+  background: #111;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 14px;
+}
+.restock-notify__form button {
+  background: var(--color-accent);
+  border: none;
+  padding: 0 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.restock-notify__message { margin-top: 14px; font-size: 13px; color: var(--color-accent); }

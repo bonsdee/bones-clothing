@@ -1,0 +1,92 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0d0d">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {{ content_for_header }}
+
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+  {%- comment -%}
+    Theme color settings become CSS custom properties here (inline, so
+    they're available before theme.css loads) rather than in a
+    Liquid-processed .css.liquid asset — Shopify's CDN serves .css.liquid
+    files with an application/x-liquid MIME type that browsers refuse to
+    apply as a stylesheet under strict MIME checking, so the dynamic part
+    has to live directly in the document instead of a separate asset file.
+  {%- endcomment -%}
+  <style>
+    :root {
+      --color-background: {{ settings.color_background | default: '#0d0d0d' }};
+      --color-text: {{ settings.color_text | default: '#f5f3ee' }};
+      --color-accent: {{ settings.color_accent | default: '#f4d21c' }};
+      --color-muted: {{ settings.color_muted | default: '#1a1a1a' }};
+      --color-border: {{ settings.color_border | default: '#333333' }};
+      --font-heading: {{ settings.heading_font_stack | default: "'Helvetica Neue', Arial, sans-serif" }};
+    }
+  </style>
+
+  <link rel="stylesheet" href="{{ 'main.css' | asset_url }}">
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  {%- if settings.heading_font_url != blank -%}
+    <link rel="stylesheet" href="{{ settings.heading_font_url }}">
+  {%- endif -%}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    window.themeConfig = {
+      routes: {
+        cartAdd: '{{ routes.cart_add_url }}',
+        cartChange: '{{ routes.cart_change_url }}',
+        cartUpdate: '{{ routes.cart_update_url }}',
+        cart: '{{ routes.cart_url }}'
+      },
+      moneyFormat: {{ shop.money_format | json }}
+    };
+  </script>
+</head>
+<body class="template-{{ request.page_type | handleize }}">
+  <a class="skip-to-content visually-hidden" href="#MainContent">Skip to content</a>
+
+  {% sections 'header-group' %}
+
+  <main id="MainContent" class="main-content" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  <div id="cart-drawer" class="cart-drawer" data-cart-drawer hidden>
+    <div class="cart-drawer__overlay" data-cart-drawer-close></div>
+    <div class="cart-drawer__panel" role="dialog" aria-label="Cart">
+      <div class="cart-drawer__header">
+        <h2>Your Bag</h2>
+        <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="Close cart">&times;</button>
+      </div>
+      <div class="cart-drawer__body" data-cart-drawer-body>
+        <!-- populated via AJAX -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>

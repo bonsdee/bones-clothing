@@ -1,0 +1,39 @@
+# Shopify CLI app config. Copy to shopify.app.toml at the repo root the CLI
+# expects, or run `shopify app config link` after creating the app in the
+# Partner Dashboard to have the CLI generate/manage this file for you.
+
+name = "Drop & Restock Manager"
+client_id = "REPLACE_WITH_CLIENT_ID"
+application_url = "https://your-tunnel-url.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+scopes = "read_products,write_products,read_inventory,write_inventory,read_orders"
+
+[auth]
+redirect_urls = [
+  "https://your-tunnel-url.trycloudflare.com/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-10"
+
+  [[webhooks.subscriptions]]
+  topics = ["app/uninstalled"]
+  uri = "/webhooks"
+
+  [[webhooks.subscriptions]]
+  topics = ["inventory_levels/update"]
+  uri = "/webhooks"
+
+  [[webhooks.subscriptions]]
+  topics = ["products/update"]
+  uri = "/webhooks"
+
+[app_proxy]
+url = "https://your-tunnel-url.trycloudflare.com/proxy"
+subpath = "drop-waitlist"
+prefix = "apps"
+
+[pos]
+embedded = false

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Build artifacts / packaged output — code lives in the repo, not zips
+*.zip

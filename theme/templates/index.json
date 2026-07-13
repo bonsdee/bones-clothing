@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "hero_drop": {
+      "type": "hero-drop",
+      "settings": {
+        "heading": "BLACK BONES",
+        "subheading": "The streets don't remember colors—they remember presence. Wear black. Leave a mark. Stay Bones.",
+        "cta_label": "Black Market",
+        "cta_url": "/collections/tee",
+        "background_image": ""
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Fresh Off the Rack",
+        "collection": "",
+        "products_to_show": 8,
+        "columns_desktop": "4"
+      }
+    },
+    "fit_builder": {
+      "type": "fit-builder",
+      "blocks": {
+        "slot_1": {
+          "type": "slot",
+          "settings": { "label": "Tee", "collection": "tee" }
+        },
+        "slot_2": {
+          "type": "slot",
+          "settings": { "label": "Hoodie / Jacket", "collection": "hoodie-jacket" }
+        }
+      },
+      "block_order": ["slot_1", "slot_2"],
+      "settings": {
+        "heading": "Build Your Fit",
+        "subheading": "Grab one piece from each rack. The bundle price unlocks automatically.",
+        "discount_percent": 15
+      }
+    },
+    "lookbook": {
+      "type": "lookbook-editorial",
+      "blocks": {
+        "story_1": {
+          "type": "story",
+          "settings": {
+            "eyebrow": "FROM THE BLOCK",
+            "heading": "Cut, screened, and washed three blocks from the shop.",
+            "body": "Every drop starts as a sketch taped to the studio wall. We work with two local print shops and one denim washer — all within walking distance.",
+            "image": ""
+          }
+        }
+      },
+      "block_order": ["story_1"],
+      "settings": {
+        "heading": "The Neighborhood Issue"
+      }
+    }
+  },
+  "order": ["hero_drop", "featured_collection", "fit_builder", "lookbook"]
+}

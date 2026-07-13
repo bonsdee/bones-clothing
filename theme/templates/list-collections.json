@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "collection-list",
+      "settings": {
+        "heading": "Shop by Collection",
+        "subheading": "Every rack, one place. Pick a lane and start browsing.",
+        "show_empty": false
+      }
+    }
+  },
+  "order": ["main"]
+}
