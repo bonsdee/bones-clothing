@@ -16,6 +16,30 @@ import ActivityLog from './pages/ActivityLog.jsx';
  * below is our own in-page nav for anyone previewing outside the iframe.
  */
 export default function App() {
+  // Embedded apps only work inside the Shopify Admin iframe, which supplies
+  // the ?host= param App Bridge needs to mint session tokens. Opened directly
+  // (localhost:5173 or the bare tunnel URL) there is no shop context and
+  // every API call would 401 — so show a clear signpost instead of a
+  // half-broken dashboard.
+  const isEmbedded = new URLSearchParams(window.location.search).has('host');
+  if (!isEmbedded) {
+    return (
+      <div style={{ maxWidth: 520, margin: '15vh auto', padding: 24, fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
+        <h1 style={{ fontSize: 22, marginBottom: 12 }}>Drop &amp; Restock Manager</h1>
+        <p style={{ color: '#555', lineHeight: 1.6 }}>
+          This is an embedded Shopify app — it runs inside the Shopify Admin,
+          which provides the store context and authentication it needs.
+          Opening it directly at this URL is expected to show nothing.
+        </p>
+        <p style={{ marginTop: 16 }}>
+          <a href="https://admin.shopify.com/store/bones-clothing-zb5sysar/apps/drop-restock-manager" style={{ color: '#2c6ecb', fontWeight: 600 }}>
+            Open it in Shopify Admin &rarr;
+          </a>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <Frame>
       <NavMenu>
