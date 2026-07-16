@@ -2,7 +2,7 @@
 
 ## Store concept: Bones Clothing
 
-Bones Clothing is a fictional local streetwear label — small-batch drops, cut and screen-printed by two print shops within walking distance of the "studio." The brand identity leans into that scarcity and locality: numbered drops (Drop 004 — Grayscale), a countdown-driven homepage hero, an editorial "Neighborhood Issue" section that tells the origin story instead of just listing products, and dark/high-contrast branding (near-black background, a single loud accent yellow) that reads as streetwear rather than generic e-commerce.
+Bones Clothing is a fictional local streetwear label — small-batch drops, cut and screen-printed by two print shops within walking distance of the "studio." The brand identity leans into that scarcity and locality: numbered drops (Black Bones), a countdown-driven homepage hero, an editorial "Neighborhood Issue" section that tells the origin story instead of just listing products, and dark/high-contrast branding (near-black background, a single loud accent yellow) that reads as streetwear rather than generic e-commerce.
 
 The standout feature is the **Fit Builder**: a merchant configures "slots" (Tee, Hoodie, Bottoms, Accessory), each backed by a collection. Shoppers pick one item per slot, watch a running subtotal update live, and unlock an automatic bundle discount once every slot is filled — a pattern lifted from how streetwear brands actually upsell ("cop the fit") rather than a generic "frequently bought together" widget. It adds every selected variant to the cart in one request and applies the merchant's matching discount code via Shopify's native `/discount/:code` redirect, so it works without any backend of its own.
 
