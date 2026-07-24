@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Layout, Card, BlockStack, InlineGrid, Text, ResourceList, ResourceItem, Badge, Banner, SkeletonBodyText } from '@shopify/polaris';
+import { Page, Layout, Card, BlockStack, InlineGrid, Text, TextField, ResourceList, ResourceItem, Badge, Banner, SkeletonBodyText } from '@shopify/polaris';
 import { Link } from 'react-router-dom';
 import { api } from '../api/client.js';
 import StatCard from '../components/StatCard.jsx';
@@ -8,20 +8,57 @@ import ScoreBadge from '../components/ScoreBadge.jsx';
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [restockQuery, setRestockQuery] = useState('');
+
+  // Pulled out so both the initial load and the manual "Refresh" action
+  // (below) share one code path — merchants land here right after a drop
+  // sells out and want an easy way to pull the latest numbers without
+  // reloading the whole embedded app.
+  function loadDashboard() {
+    setRefreshing(true);
+    return api
+      .get('/api/dashboard')
+      .then((result) => {
+        setData(result);
+        setError(null);
+        setLastUpdated(new Date());
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setRefreshing(false));
+  }
 
   useEffect(() => {
-    api
-      .get('/api/dashboard')
-      .then(setData)
-      .catch((err) => setError(err.message));
+    loadDashboard();
   }, []);
 
+  // Client-side only — the list is already small (top picks), so filtering
+  // in-memory as the merchant types avoids a round trip for every keystroke.
+  const filteredTopRestock = data
+    ? data.topRestockPriority.filter((item) =>
+        item.title.toLowerCase().includes(restockQuery.trim().toLowerCase())
+      )
+    : [];
+
   return (
-    <Page title="Dashboard" subtitle="Bones Clothing — drop performance at a glance">
+    <Page
+      title="Dashboard"
+      subtitle="Bones Clothing — drop performance at a glance"
+      primaryAction={{ content: 'Refresh', onAction: loadDashboard, loading: refreshing }}
+    >
       <Layout>
         {error && (
           <Layout.Section>
             <Banner tone="critical" title="Could not load dashboard">{error}</Banner>
+          </Layout.Section>
+        )}
+
+        {lastUpdated && (
+          <Layout.Section>
+            <Text as="p" tone="subdued" variant="bodySm" alignment="end">
+              Last updated {lastUpdated.toLocaleTimeString()}
+            </Text>
           </Layout.Section>
         )}
 
@@ -46,23 +83,39 @@ export default function Dashboard() {
                 Score is 0-100; higher means restock sooner.
               </Text>
               {data ? (
-                <ResourceList
-                  resourceName={{ singular: 'product', plural: 'products' }}
-                  items={data.topRestockPriority}
-                  renderItem={(item) => (
-                    <ResourceItem id={String(item.id)}>
-                      <BlockStack gap="100">
-                        <InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
-                          <Text as="span" fontWeight="semibold">{item.title}</Text>
-                          <ScoreBadge score={item.score} />
-                        </InlineGrid>
-                        <Text as="span" variant="bodySm" tone="subdued">
-                          {item.waitlistCount} waitlisted &middot; {item.sellThroughRate}% sold through
-                        </Text>
-                      </BlockStack>
-                    </ResourceItem>
+                <>
+                  <TextField
+                    label="Search products"
+                    labelHidden
+                    placeholder="Search by product name…"
+                    value={restockQuery}
+                    onChange={setRestockQuery}
+                    clearButton
+                    onClearButtonClick={() => setRestockQuery('')}
+                    autoComplete="off"
+                  />
+                  {filteredTopRestock.length === 0 ? (
+                    <Text as="p" tone="subdued">No products match “{restockQuery}”.</Text>
+                  ) : (
+                    <ResourceList
+                      resourceName={{ singular: 'product', plural: 'products' }}
+                      items={filteredTopRestock}
+                      renderItem={(item) => (
+                        <ResourceItem id={String(item.id)}>
+                          <BlockStack gap="100">
+                            <InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
+                              <Text as="span" fontWeight="semibold">{item.title}</Text>
+                              <ScoreBadge score={item.score} />
+                            </InlineGrid>
+                            <Text as="span" variant="bodySm" tone="subdued">
+                              {item.waitlistCount} waitlisted &middot; {item.sellThroughRate}% sold through
+                            </Text>
+                          </BlockStack>
+                        </ResourceItem>
+                      )}
+                    />
                   )}
-                />
+                </>
               ) : (
                 <SkeletonBodyText lines={4} />
               )}
